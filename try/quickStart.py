@@ -4,7 +4,7 @@ import robosuite as suite
 # create environment instance
 env = suite.make(
     env_name="Lift", # try with other tasks like "Stack" and "Door"
-    robots="Panda", # try with other robots like "Sawyer" and "Jaco"
+    robots="Baxter", # try with other robots like "Sawyer" and "Jaco"
     has_renderer=True,
     has_offscreen_renderer=False,
     use_camera_obs=False,
