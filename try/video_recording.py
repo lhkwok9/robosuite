@@ -26,7 +26,7 @@ if __name__ == "__main__":
     parser.add_argument("--environment", type=str, default="Stack")
     parser.add_argument("--robots", nargs="+", type=str, default="Panda", help="Which robot(s) to use in the env")
     parser.add_argument("--timesteps", type=int, default=500)
-    parser.add_argument("--camera", type=str, default=["frontview", "birdview"])
+    parser.add_argument("--camera", nargs="+", type=str, default=["customfrontview", "custombirdview"])
     parser.add_argument("--height", type=int, default=480)
     parser.add_argument("--width", type=int, default=640)
     parser.add_argument("--skip_frame", type=int, default=1)

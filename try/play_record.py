@@ -4,7 +4,7 @@ import cv2
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--camera", type=str, default="birdview", help="Which camera(s) to use in the env")
+parser.add_argument("--camera", type=str, default="custombirdview", help="Which camera(s) to use in the env")
 parser.add_argument("--height", type=int, default=480)
 parser.add_argument("--width", type=int, default=640)
 args = parser.parse_args()
