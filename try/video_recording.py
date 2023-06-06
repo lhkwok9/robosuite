@@ -30,6 +30,7 @@ if __name__ == "__main__":
     parser.add_argument("--height", type=int, default=480)
     parser.add_argument("--width", type=int, default=640)
     parser.add_argument("--skip_frame", type=int, default=1)
+    parser.add_argument("--fps", type=int, default=50)
     args = parser.parse_args()
 
     # initialize an environment with offscreen renderer
@@ -51,44 +52,38 @@ if __name__ == "__main__":
     obs = env.reset()
     ndim = env.action_dim
 
+    # create a video writer with imageio
+    writer = []
     camera_num = len(args.camera)
     print(camera_num)
-    os.mkdir("./images")
-    os.mkdir("./images/frontview")
-    os.mkdir("./images/birdview")
+    try: 
+        os.mkdir("./images")
+        for i in range(camera_num):
+            os.mkdir("./images/" + args.camera[i])
+            writer.append(imageio.get_writer("./images/" + args.camera[i] + ".mp4", fps=args.fps))
+    except:
+        pass
 
-    # create a video writer with imageio
-    writer_front = imageio.get_writer("./images/frontview.mp4", fps=50)
-    writer_bird = imageio.get_writer("./images/birdview.mp4", fps=50) 
-
-    frames = []
-    for i in range(args.timesteps):
+    for j in range(args.timesteps):
 
         # run a uniformly random agent
         action = 0.5 * np.random.randn(ndim)
         obs, reward, done, info = env.step(action)
 
         # dump a frame from every K frames
-        if i % args.skip_frame == 0:
-            frame_front = obs["frontview_image"]
-            frame_bird = obs["birdview_image"]
-            # print(frame.shape)
-            writer_front.append_data(frame_front)
-            writer_bird.append_data(frame_bird)
-            with open(f'./images/frontview/{i}.npy', 'wb') as f:
-                np.save(f, frame_front)
-                f.close
-            with open(f'./images/birdview/{i}.npy', 'wb') as f:
-                np.save(f, frame_bird)
-                f.close
-            print("Saving frame #{}".format(i))
+        if j % args.skip_frame == 0:
+            frame = []
+            for i in range(camera_num):
+                frame.append(obs[args.camera[i] + "_image"])
+                # print(frame.shape)
+                writer[i].append_data(frame[i])
+                with open(f'./images/{args.camera[i]}/{j}.npy', 'wb') as f:
+                    np.save(f, frame[i])
+                    f.close
+            print("Saving frame #{}".format(j))
 
         if done:
             break
 
-# with open('test.npy', 'wb') as f:
-#     np.save(f, np.array([1, 2]))
-#     np.save(f, np.array([1, 3]))
-
-    writer_front.close()
-    writer_bird.close()
+    for i in range(camera_num):
+        writer[i].close()
